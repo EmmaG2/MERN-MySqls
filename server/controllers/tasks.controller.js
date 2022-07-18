@@ -4,8 +4,10 @@ export const getTasks = async (req, res) => {
   const [result] = await sqlDB.query(
     'SELECT * FROM tasks ORDER BY createdAt ASC'
     )
+
+    if (result.length <= 0) return res.sendStatus(400)
   
-    res.json(result)
+    return res.status(200).json(result)
 }
 
 export const getTask = async (req, res) => {
@@ -13,15 +15,11 @@ export const getTask = async (req, res) => {
   const [result] = await sqlDB.query('SELECT * FROM tasks WHERE id = ?',
   [req.params.id])
 
-  if (result.length <= 0) return res.status(400).json({
-    succes: false,
-  })
+  if (result.length <= 0) return res.sendStatus(400)
 
   return res.json({
-    succes: true,
     response: result[0]
   })
-  
 }
 
 export const createTask = async (req, res) => {
@@ -38,11 +36,17 @@ export const createTask = async (req, res) => {
   })
 }
 
-export const updateTask = (req, res) => {
-  res.send('actualizando tarea')
+export const updateTask = async (req, res) => {
+  const [result] = await sqlDB.query('UPDATE tasks SET ? WHERE id = ?',
+  [req.body, req.params.id]
+  )
+  if (result.affectedRows == 0) return res.sendStatus(400)
+  
+  return res.json(result)
 }
 
-export const deleteTask = (req, res) => {
-  res.send('eliminar tarea')
+export const deleteTask = async (req, res) => {
+  const [result] = await sqlDB.query('DELETE FROM tasks WHERE id = ?', [req.params.id])
+  return res.sendStatus(204)
 }
 
