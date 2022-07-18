@@ -1,5 +1,7 @@
+import { Title } from "../styledComponents/Tittle";
+
 function tasksPage() {
-  return <h1>tasksPage</h1>;
+  return <Title>Your Tasks</Title>;
 }
 
 export default tasksPage;
